@@ -26,10 +26,10 @@ public class Login {
             public void actionPerformed(ActionEvent e) {
                 String name = jt.getText();
                 String pass = jt1.getText();
-                boolean request = false;
                 try {
                     File file = new File("D:\\Codejava\\myproject\\src\\Restaurant\\text.txt");
                     Scanner scanner = new Scanner(file);
+                    boolean loginrequest = false;
                     // Đọc dữ liệu từ file
                     while (scanner.hasNextLine()) {
                         String line = scanner.nextLine();
@@ -37,16 +37,21 @@ public class Login {
                         String[] data = line.split(" ");
                         // Kiểm tra thông tin đăng nhập
                         if (data.length == 2 && data[0].equals(name) && data[1].equals(pass)) {
-                            f.dispose();
-                            JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
-                            Menu menu = new Menu();
-//                            menu.display();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
+                            loginrequest = true;
+                            break;
                         }
                     }
                     scanner.close();
                     ;
+                    if (loginrequest){
+                        f.dispose();
+                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
+                        Menu menu = new Menu();
+                        menu.display();
+                    }else {
+                        JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
                 } catch (FileNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
