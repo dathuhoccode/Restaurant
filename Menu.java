@@ -9,7 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Menu {
-    public static void main(String[] agrs) {
+    public static void display() {
         JFrame f = new JFrame("Menu");
         JMenuBar menuBar = new JMenuBar();
         f.setJMenuBar(menuBar);
