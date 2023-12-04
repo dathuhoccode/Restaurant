@@ -18,14 +18,14 @@ public class Login {
         l2.setBounds(50, 125, 150, 30);
         JTextField jt = new JTextField();
         jt.setBounds(200, 82, 150, 30);
-        JTextField jt1 = new JTextField();
-        jt1.setBounds(200, 125, 150, 30);
+        JPasswordField jPasswordField = new JPasswordField();
+        jPasswordField.setBounds(200, 125, 150, 30);
         Button login = new Button("Login");
         login.setBounds(200, 165, 75, 35);
         login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = jt.getText();
-                String pass = jt1.getText();
+                String pass = jPasswordField.getText();
                 try {
                     File file = new File("D:\\Codejava\\myproject\\src\\Restaurant\\text.txt");
                     Scanner scanner = new Scanner(file);
@@ -43,7 +43,7 @@ public class Login {
                     }
                     scanner.close();
                     ;
-                    if (loginrequest){
+                    if (loginrequest){ 
                         f.dispose();
                         JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
                         Menu menu = new Menu();
@@ -61,7 +61,7 @@ public class Login {
         f.add(l1);
         f.add(l2);
         f.add(jt);
-        f.add(jt1);
+        f.add(jPasswordField);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
