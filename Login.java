@@ -63,7 +63,7 @@ public class Login {
         f.add(jt);
         f.add(jPasswordField);
         f.setSize(500, 500);
-        f.setLayout(null);
+        f.setLayout(new BorderLayout());
         f.setVisible(true);
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

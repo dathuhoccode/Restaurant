@@ -13,21 +13,11 @@ public class Menu {
         JFrame f = new JFrame("Menu");
         JMenuBar menuBar = new JMenuBar();
         f.setJMenuBar(menuBar);
-        JMenu jMenu = new JMenu("Menu");
-        JMenu jMenu1 = new JMenu("Bill");
         JMenu jMenu2 = new JMenu("Help");
-        JMenuItem item = new JMenuItem("Add food");
-        JMenuItem item1 = new JMenuItem("Add food ingredients");
-        JMenuItem menuItem = new JMenuItem("Check bill");
-        JMenuItem menuItem1 = new JMenuItem("Clear bill");
+        JMenu jMenu1 = new JMenu("Check bill");
         JTable table = new JTable();
-        menuBar.add(jMenu);
         menuBar.add(jMenu1);
         menuBar.add(jMenu2);
-        jMenu.add(item);
-        jMenu.add(item1);
-        jMenu1.add(menuItem);
-        jMenu1.add(menuItem1);
         JLabel jLabel;
         jLabel = new JLabel("Food name");
         jLabel.setFont(new Font("",Font.PLAIN,24));
@@ -75,17 +65,17 @@ public class Menu {
         addButton.setBounds(270,16,75,30);
         DefaultTableModel tableModel = new DefaultTableModel();
         JTable Table = new JTable(tableModel);
-
+        Table.setBounds(0,150,400,600);
         // Thêm cột cho bảng
-        tableModel.addColumn("Column 1");
-        tableModel.addColumn("Column 2");
-        tableModel.addColumn("Column 3");
+        tableModel.addColumn("Food name");
+        tableModel.addColumn("Quantity");
+        tableModel.addColumn("Price");
         JPanel inputPanel = new JPanel(new FlowLayout());
         inputPanel.add(jTextField);
         inputPanel.add(jTextField1);
         inputPanel.add(jTextField2);
         inputPanel.add(addButton);
-
+        Table.setEnabled(false);
         f.add(inputPanel, BorderLayout.NORTH);
         f.add(new JScrollPane(table), BorderLayout.CENTER);
 
@@ -97,14 +87,16 @@ public class Menu {
                 String data1 = jTextField.getText();
                 String data2 = jTextField1.getText();
                 String data3 = jTextField2.getText();
-
-                // Thêm dữ liệu vào bảng
-                tableModel.addRow(new Object[]{data1, data2, data3});
-
-                // Xóa dữ liệu trong các TextField
-                jTextField.setText("");
-                jTextField1.setText("");
-                jTextField2.setText("");
+                if (data1.isEmpty() || data2.isEmpty() || data3.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // Thêm dữ liệu vào bảng
+                    tableModel.addRow(new Object[]{data1, data2, data3});
+                    // Xóa dữ liệu trong các TextField
+                    jTextField.setText("");
+                    jTextField1.setText("");
+                    jTextField2.setText("");
+                }
             }
         });
         Table.setBounds(150,250,800,300);
