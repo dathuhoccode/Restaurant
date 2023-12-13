@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.*;
+import java.util.Objects;
 import java.util.Scanner;
 import javax.swing.*;
 
@@ -27,32 +29,26 @@ public class Login {
                 String name = jt.getText();
                 String pass = jPasswordField.getText();
                 try {
-                    File file = new File("D:\\Codejava\\myproject\\src\\Restaurant\\text.txt");
-                    Scanner scanner = new Scanner(file);
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant","root","1234");
+                    Statement statement = conn.createStatement();
+                    ResultSet result = statement.executeQuery("select * from acc");
                     boolean loginrequest = false;
-                    // Đọc dữ liệu từ file
-                    while (scanner.hasNextLine()) {
-                        String line = scanner.nextLine();
-                        // Split dữ liệu theo khoảng trắng
-                        String[] data = line.split(" ");
-                        // Kiểm tra thông tin đăng nhập
-                        if (data.length == 2 && data[0].equals(name) && data[1].equals(pass)) {
-                            loginrequest = true;
-                            break;
+                    if (conn != null) {
+                        while (result.next()) {
+                            if ((Objects.equals(result.getString("Acc_name"), name)) && (Objects.equals(result.getString("Acc_pass"), pass))) {
+                                 loginrequest = true;
+                            }
                         }
                     }
-                    scanner.close();
                     ;
                     if (loginrequest){ 
                         f.dispose();
                         JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
-                        Menu menu = new Menu();
-                        menu.display();
+                        new Menu().setVisible(true);
                     }else {
                         JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
                     }
-
-                } catch (FileNotFoundException ex) {
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
