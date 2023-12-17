@@ -3,6 +3,8 @@ package Restaurant;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -24,6 +26,14 @@ public class Login {
         jPasswordField.setBounds(200, 125, 150, 30);
         Button login = new Button("Login");
         login.setBounds(200, 165, 75, 35);
+        JLabel register = new JLabel("You haven't account, press me");
+        register.setBounds(150,190,250,100);
+        register.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new Register().setVisible(true);
+            }
+        });
         login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = jt.getText();
@@ -57,6 +67,7 @@ public class Login {
         f.add(l1);
         f.add(l2);
         f.add(jt);
+        f.add(register);
         f.add(jPasswordField);
         f.setSize(500, 500);
         f.setLayout(new BorderLayout());

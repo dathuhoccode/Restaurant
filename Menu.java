@@ -3,6 +3,8 @@ package Restaurant;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class Menu extends javax.swing.JFrame {
     /**
      * Creates new form Menu
      */
-    public Menu() {
+    public Menu(){
         initComponents();
     }
 
@@ -35,8 +37,6 @@ public class Menu extends javax.swing.JFrame {
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from food");
 
-        ArrayList food =  new ArrayList<>();
-
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -44,7 +44,7 @@ public class Menu extends javax.swing.JFrame {
             @Override
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
-                if (!Character.isLetter(c)) {
+                if (!(Character.isLetter(c)||c == ' ')) {
                     e.consume(); // Ngăn chặn ký tự không phải chữ được nhập vào
                 }
             }
@@ -114,21 +114,30 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 //            DefaultTableModel model = (DefaultTableModel) Table.getModel();
-        Table.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                },
-                new String [] {
-                        "Food name", "Quality", "Price"
-                }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                    false, false, false
-            };
+            DefaultTableModel model = new DefaultTableModel(
+                    new Object [][] {
+                    },
+                    new String [] {
+                            "Food name", "Quality", "Price (VND)"
+                    }
+            ) {
+                boolean[] canEdit = new boolean [] {
+                        false, false, false
+                };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit [columnIndex];
+                }
+            };
+            while (resultSet.next()) {
+                Object[] rowData = new Object[]{resultSet.getString("food"), resultSet.getString("quantity"), resultSet.getDouble("price")};
+                model.addRow(rowData);
             }
-        });
+
+        Table.setModel(model);
+        }catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
         jScrollPane1.setViewportView(Table);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -203,11 +212,15 @@ public class Menu extends javax.swing.JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                JOptionPane.showMessageDialog(null, "This is a beta version, If I have time, I will update it", "Thanks for using", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
         setResizable(false);
         pack();
-        }catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
     }// </editor-fold>
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -243,7 +256,7 @@ public class Menu extends javax.swing.JFrame {
 //        }
 //    }
 
-    private void AddActionPerformed(java.awt.event.ActionEvent evt) {
+    private void AddActionPerformed(java.awt.event.ActionEvent evt)  {
         // TODO add your handling code here:
         final int[] selectedRow = new int[1];
         selectedRow[0] = -1;
@@ -253,21 +266,16 @@ public class Menu extends javax.swing.JFrame {
             String foodName = jTextField1.getText();
             String quality = jTextField2.getText();
             String price = jTextField3.getText();
-
             if (!foodName.isEmpty() && !quality.isEmpty() && !price.isEmpty()) {
                 model.addRow(new Object[]{foodName, quality, price});
-                try {
-                    String textFilePath = "E:\\JavaCode\\src\\Phap\\Restaurant";
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(textFilePath, true));
-
-                    // Get the data from text fields and append to the file
-                    writer.write(jTextField1.getText() + "," + jTextField2.getText() + "," + jTextField3.getText());
-                    writer.newLine();  // Move to the next line for the next entry
-
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error saving data to text file.", "Error", JOptionPane.ERROR_MESSAGE);
+                try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant", "root", "1234");
+                     PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO food(food, quantity, price) VALUES (?, ?, ?)")) {
+                    preparedStatement.setString(1, foodName);
+                    preparedStatement.setString(2, quality);
+                    preparedStatement.setString(3, price);
+                    int insert = preparedStatement.executeUpdate();
+                } catch (SQLException sqlException) {
+                    sqlException.printStackTrace();
                 }
                 clearFields();
             } else {
@@ -276,9 +284,44 @@ public class Menu extends javax.swing.JFrame {
 
         }else {
             // Cập nhật nếu có hàng được chọn
+            // trước cập nhật
+            String foodName = jTextField1.getText();
             model.setValueAt(jTextField1.getText(), selectedRow[0], 0);
             model.setValueAt(jTextField2.getText(), selectedRow[0], 1);
             model.setValueAt(jTextField3.getText(), selectedRow[0], 2);
+            //sau cập nhật
+            Object valueAtA = model.getValueAt(selectedRow[0], 0);
+            Object valueAtB = model.getValueAt(selectedRow[0], 1);
+            Object valueAtC = model.getValueAt(selectedRow[0], 2);
+            String dataA = valueAtA.toString();
+//                String dataB = valueAtA.toString();
+//                String dataC = valueAtA.toString();
+//                boolean request = false;
+            try {
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant", "root", "1234");
+                Statement statement = con.createStatement();
+                ResultSet resultSet = statement.executeQuery("select * from food");
+                while (resultSet.next()) {
+                    String test = resultSet.getString("food");
+                    if(test.equals(foodName)){
+                        String sql = "UPDATE food SET food = ?, quantity = ?,price = ? WHERE food = ?";
+                        try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                            // Đặt giá trị cho tham số trong câu lệnh SQL
+                            preparedStatement.setObject(1, valueAtA);
+                            preparedStatement.setObject(2, valueAtB);
+                            // Đặt giá trị cho tham số trong điều kiện WHERE (chẳng hạn là primary key)
+                            preparedStatement.setObject(3, valueAtC);
+                            preparedStatement.setObject(4, test);
+                            // Thực hiện cập nhật
+                            int rowsAffected = preparedStatement.executeUpdate();
+                        }catch (SQLException sqlException) {
+                            sqlException.printStackTrace();
+                        }
+
+                    } }
+            } catch (SQLException sqle){
+                sqle.getMessage();
+            }
             // Reset biến selectedRow
             selectedRow[0] = -1;
             // Xóa dữ liệu trong các TextField
@@ -295,8 +338,22 @@ public class Menu extends javax.swing.JFrame {
         int selectedRow = Table.getSelectedRow();
 
         if (selectedRow != -1) {
+            Object valueAtA = model.getValueAt(selectedRow, 0);
+            String dataA = valueAtA.toString();
             model.removeRow(selectedRow);
+            try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant", "root", "1234");
+                 PreparedStatement preparedStatement = con.prepareStatement("DELETE FROM food WHERE food = ?")) {
+                // Đặt giá trị cho tham số
+                preparedStatement.setString(1, dataA);
+
+                // Thực hiện câu lệnh SQL
+                int rowsAffected = preparedStatement.executeUpdate();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+
             clearFields();
+
         } else {
             JOptionPane.showMessageDialog(null, "Please select a row to delete.", "Error", JOptionPane.ERROR_MESSAGE);
         }
