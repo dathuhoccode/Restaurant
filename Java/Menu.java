@@ -1,15 +1,11 @@
-package Restaurant;
+package Restaurant.Java;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 /**
  *
