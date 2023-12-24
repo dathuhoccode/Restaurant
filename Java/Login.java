@@ -39,20 +39,29 @@ public class Login {
                     Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant","root","1234");
                     Statement statement = conn.createStatement();
                     ResultSet result = statement.executeQuery("select * from acc");
-                    boolean loginrequest = false;
+                    int loginrequest = '0';
                     if (conn != null) {
                         while (result.next()) {
                             if ((Objects.equals(result.getString("Acc_name"), name)) && (Objects.equals(result.getString("Acc_pass"), pass))) {
-                                 loginrequest = true;
+
+                                if(result.getString("acc_access").contains("ADMIN")) {
+                                    loginrequest = 1;
+                                }else if (result.getString("acc_access").contains("CUSTOMER")){
+                                    loginrequest = 2;
+                                }
                             }
                         }
                     }
                     ;
-                    if (loginrequest){ 
+                    if (loginrequest == 1){
                         f.dispose();
                         JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
                         new Menu().setVisible(true);
-                    }else {
+                    }else if (loginrequest == 2) {
+                        f.dispose();
+                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
+                        new MenuOrder().setVisible(true);
+                    }else{
                         JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (SQLException ex) {
