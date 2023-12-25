@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `acc`;
 CREATE TABLE `acc` (
   `acc_name` varchar(20) NOT NULL,
   `acc_pass` varchar(20) NOT NULL,
+  `acc_access` varchar(45) NOT NULL,
   PRIMARY KEY (`acc_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -35,7 +36,7 @@ CREATE TABLE `acc` (
 
 LOCK TABLES `acc` WRITE;
 /*!40000 ALTER TABLE `acc` DISABLE KEYS */;
-INSERT INTO `acc` VALUES ('Phap','1234'),('Test','1234');
+INSERT INTO `acc` VALUES ('Phap','1234','ADMIN_1'),('Test','1234','CUSTOMER_1');
 /*!40000 ALTER TABLE `acc` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-17 20:36:22
+-- Dump completed on 2023-12-25 13:29:40
