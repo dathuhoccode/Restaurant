@@ -11,7 +11,7 @@
             <AnchorPane prefHeight="435.0" prefWidth="223.0" styleClass="left-from" stylesheets="@../CSS/Menu.css" />
             <AnchorPane layoutX="223.0" prefHeight="435.0" prefWidth="433.0" styleClass="right-form" stylesheets="@../CSS/Menu.css">
                <children>
-                  <ComboBox layoutX="81.0" layoutY="123.0" prefWidth="150.0" styleClass="combo-box" stylesheets="@../CSS/Menu.css" />
+                  <ComboBox fx:id="food" layoutX="114.0" layoutY="110.0" prefWidth="150.0" styleClass="combo-box" stylesheets="@../CSS/Menu.css" />
                </children></AnchorPane>
          </children>
       </AnchorPane>
