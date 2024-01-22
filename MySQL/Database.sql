@@ -12,8 +12,10 @@ create table food
     food     varchar(30) not null
         primary key,
     quantity int         not null,
-    price    int         not null
+    price    int         not null,
+    picture varchar(40) not null
 );
+insert into food values ('Chicken',1111,1111,'..\\Picture\\Chicken.jpg'),('noodle',1111,111,'..\\Picture\\noodle.jpg');
 create table f_order
 (
     ID       varchar(25) not null
