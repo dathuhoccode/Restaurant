@@ -1,0 +1,4 @@
+vui lòng:
++ chạy Database trước khi chạy chương trình.
++ Login là hàm chính, vui lòng bắt đầu từ đó.
++ Có 2 tài khoản: Phap 1234, Test 1234.

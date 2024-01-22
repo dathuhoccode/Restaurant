@@ -174,7 +174,7 @@ public class Register extends JFrame {
                 if (accountExists) {
                     JOptionPane.showMessageDialog(null, "Account already exists", "Errol", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    if (new_pass.equals(trypass)) {
+                    if (new_pass.equals(trypass)){
                         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant", "root", "1234");
                              PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO acc(acc_name, acc_pass,acc_access) VALUES (?, ?, ?)")) {
                             preparedStatement.setString(1, new_acc);
@@ -246,5 +246,4 @@ public class Register extends JFrame {
     private JTextField jTextField1;
     private JTextField jTextField2;
     private JTextField jTextField3;
-    // End of variables declaration
 }

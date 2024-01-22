@@ -36,34 +36,48 @@ public class Login {
                 String name = jt.getText();
                 String pass = jPasswordField.getText();
                 try {
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant","root","1234");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/Restaurant", "root", "1234");
                     Statement statement = conn.createStatement();
                     ResultSet result = statement.executeQuery("select * from acc");
-                    int loginrequest = '0';
+
                     if (conn != null) {
+                        boolean loginSuccessful = false;
+
                         while (result.next()) {
                             if ((Objects.equals(result.getString("Acc_name"), name)) && (Objects.equals(result.getString("Acc_pass"), pass))) {
-
-                                if(result.getString("acc_access").contains("ADMIN")) {
-                                    loginrequest = 1;
-                                }else if (result.getString("acc_access").contains("CUSTOMER")){
-                                    loginrequest = 2;
+                                if (result.getString("acc_access").contains("ADMIN")) {
+                                    f.dispose();
+                                    JOptionPane.showMessageDialog(null, "Logged in successfully", "Login", JOptionPane.INFORMATION_MESSAGE);
+                                    new Menu().setVisible(true);
+                                } else if (result.getString("acc_access").contains("CUSTOMER")) {
+                                    String access = result.getString("acc_access");
+                                    f.dispose();
+                                    JOptionPane.showMessageDialog(null, "Logged in successfully", "Login", JOptionPane.INFORMATION_MESSAGE);
+                                    new MenuOrder(access).setVisible(true);
                                 }
+                                loginSuccessful = true;
+                                break;
                             }
                         }
+
+                        if (!loginSuccessful) {
+                            jPasswordField.setText("");
+                            JOptionPane.showMessageDialog(null, "Login failed", "Login", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
-                    ;
-                    if (loginrequest == 1){
-                        f.dispose();
-                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
-                        new Menu().setVisible(true);
-                    }else if (loginrequest == 2) {
-                        f.dispose();
-                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
-                        new MenuOrder().setVisible(true);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
-                    }
+            ;
+//                    if (loginrequest == 1){
+//                        f.dispose();
+//                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
+//                        new Menu().setVisible(true);
+//                    }else if (loginrequest == 2) {
+//                        f.dispose();
+//                        JOptionPane.showMessageDialog(null, "Login success", "Login", JOptionPane.INFORMATION_MESSAGE);
+////                        MenuOrder.launchApp(agrs);
+//                        new MenuOrder(access).setVisible(true);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Login fail", "Login", JOptionPane.INFORMATION_MESSAGE);
+//                    }
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -75,7 +89,7 @@ public class Login {
         f.add(jt);
         f.add(register);
         f.add(jPasswordField);
-        f.setSize(500, 500);
+        f.setSize(500, 350);
         f.setLayout(new BorderLayout());
         f.setVisible(true);
         f.setResizable(false);
